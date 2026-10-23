@@ -197,11 +197,6 @@ body::before {
 /* ---------- Masthead ---------- */
 
 .masthead {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px 28px;
   padding-bottom: 22px;
   margin-bottom: 26px;
   border-bottom: 1px solid var(--line);
@@ -215,6 +210,15 @@ body::before {
   width: 120px;
   height: 1px;
   background: linear-gradient(90deg, var(--accent), transparent);
+}
+
+.masthead-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 20px;
+  margin-bottom: 18px;
 }
 
 .brand {
@@ -276,8 +280,6 @@ body::before {
 
 .tabs {
   display: flex;
-  flex: 1 1 0;
-  min-width: 0;
   gap: 2px;
   padding: 4px;
   background: var(--well);
