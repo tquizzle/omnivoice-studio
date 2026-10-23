@@ -9,6 +9,7 @@
     generate: "/api/generate",
     voices: "/api/voices",
     history: "/api/history",
+    status: "/api/status",
   };
 
   const TABS = ["clone", "design", "auto", "library"];
@@ -37,6 +38,8 @@
     "tab-clone", "tab-design", "tab-auto", "tab-library",
 
     "theme-switch",
+
+    "status-badge",
   ];
 
   const $ = (id) => document.getElementById(id);
@@ -169,6 +172,13 @@
       const scheme = THEME_COLOR_SCHEME[theme] || "dark";
       colorSchemeMeta.setAttribute("content", `${scheme} light`);
     }
+    // Waveform bars are baked to a color at draw time — redraw from the cached
+    // audio buffer so they pick up the new theme's accent color.
+    document.querySelectorAll(".result-waveform").forEach((canvas) => {
+      if (canvas._waveformBuffer && typeof drawWaveform === "function") {
+        drawWaveform(canvas, canvas._waveformBuffer);
+      }
+    });
   }
 
   const themeSwatches = els["theme-switch"] ? [...els["theme-switch"].querySelectorAll(".theme-swatch")] : [];
@@ -206,6 +216,37 @@
   });
 
   initTheme();
+
+  /* ---------- status badge ---------- */
+
+  function deviceLabel(device) {
+    const base = String(device || "").split(":")[0];
+    return base ? base.toUpperCase() : "unknown device";
+  }
+
+  async function loadStatus() {
+    const badge = els["status-badge"];
+    if (!badge) return;
+    const text = badge.querySelector(".status-text");
+
+    try {
+      const res = await api(API.status);
+      const data = await res.json();
+      const ready = data.status === "ready";
+      badge.classList.toggle("is-ready", ready);
+      badge.classList.toggle("is-loading", !ready);
+      badge.classList.remove("is-error");
+      text.textContent = `${ready ? "Ready" : "Loading model"} · ${deviceLabel(data.device)}`;
+      if (!ready) setTimeout(loadStatus, 3000);
+    } catch (_) {
+      badge.classList.remove("is-ready", "is-loading");
+      badge.classList.add("is-error");
+      text.textContent = "Server unreachable";
+      setTimeout(loadStatus, 5000);
+    }
+  }
+
+  loadStatus();
 
   /* ---------- clone: dropzone + reference audio ---------- */
 
@@ -462,12 +503,84 @@
   populateAccentDialectOptions();
   composeInstruct();
 
+  /* ---------- waveform preview ---------- */
+
+  let sharedAudioContext = null;
+  function getAudioContext() {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    if (!sharedAudioContext) sharedAudioContext = new Ctx();
+    return sharedAudioContext;
+  }
+
+  function drawWaveform(canvas, audioBuffer) {
+    const ctx2d = canvas.getContext("2d");
+    if (!ctx2d) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const width = Math.max(1, Math.round(rect.width * dpr));
+    const height = Math.max(1, Math.round((rect.height || 56) * dpr));
+    canvas.width = width;
+    canvas.height = height;
+
+    const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#d98e4a";
+    const channel = audioBuffer.getChannelData(0);
+    const gapPx = 1 * dpr;
+    const barWidth = Math.max(1, 2 * dpr);
+    const bars = Math.max(1, Math.floor(width / (barWidth + gapPx)));
+    const samplesPerBar = Math.max(1, Math.floor(channel.length / bars));
+    const mid = height / 2;
+
+    ctx2d.clearRect(0, 0, width, height);
+    ctx2d.fillStyle = accent;
+
+    for (let i = 0; i < bars; i++) {
+      const start = i * samplesPerBar;
+      let peak = 0;
+      for (let j = 0; j < samplesPerBar; j++) {
+        const v = Math.abs(channel[start + j] || 0);
+        if (v > peak) peak = v;
+      }
+      const barHeight = Math.max(2 * dpr, peak * height);
+      const x = i * (barWidth + gapPx);
+      ctx2d.fillRect(x, mid - barHeight / 2, barWidth, barHeight);
+    }
+  }
+
+  async function renderWaveform(canvas, url) {
+    if (!canvas) return;
+    const audioCtx = getAudioContext();
+    if (!audioCtx) return;
+
+    try {
+      const res = await fetch(url);
+      const arrayBuffer = await res.arrayBuffer();
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+      canvas._waveformBuffer = audioBuffer;
+      drawWaveform(canvas, audioBuffer);
+    } catch (_) {
+      // Decoding failed — leave the canvas blank; the native audio controls still work.
+    }
+  }
+
+  let waveformResizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(waveformResizeTimer);
+    waveformResizeTimer = setTimeout(() => {
+      document.querySelectorAll(".result-waveform").forEach((canvas) => {
+        if (canvas._waveformBuffer) drawWaveform(canvas, canvas._waveformBuffer);
+      });
+    }, 200);
+  });
+
   /* ---------- generation ---------- */
 
   function showResult(kind, data) {
     const card = els[`${kind}-result`];
     const audio = card.querySelector(".result-audio");
     const link = card.querySelector(".result-download");
+    const waveform = card.querySelector(".result-waveform");
 
     audio.src = data.audio_url;
     audio.load();
@@ -475,6 +588,7 @@
     link.setAttribute("download", `${data.id || "omnivoice"}.wav`);
     card.hidden = false;
     card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    renderWaveform(waveform, data.audio_url);
   }
 
   async function runGenerate(kind, buildForm) {

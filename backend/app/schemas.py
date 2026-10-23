@@ -36,3 +36,10 @@ class HistoryItemOut(BaseModel):
 
 class HistoryResponse(BaseModel):
     items: list[HistoryItemOut]
+
+
+class StatusResponse(BaseModel):
+    status: Literal["ready", "loading"]
+    model: str
+    device: str
+    dtype: str

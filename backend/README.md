@@ -215,6 +215,15 @@ Returns generation history, newest first.
 
 Removes the entry from `history.json` and deletes `outputs/<item_id>.wav`. Returns `204` with no body.
 
+### `GET /api/status`
+
+Reports whether the model is loaded, and on what device. The frontend header badge polls this
+once on load.
+
+```json
+{"status": "ready", "model": "k2-fsa/OmniVoice", "device": "mps", "dtype": "float32"}
+```
+
 ### Static audio and UI
 
 - `GET /audio/<id>.wav` serves generated audio from `DATA_DIR/outputs`.

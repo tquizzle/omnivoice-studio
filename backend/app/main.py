@@ -14,7 +14,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app import storage
 from app.model_manager import model_manager
-from app.routers import generate, history, voices
+from app.routers import generate, history, status, voices
 
 
 def _resolve_frontend_dir() -> Path:
@@ -64,6 +64,7 @@ app.add_middleware(
 app.include_router(generate.router)
 app.include_router(voices.router)
 app.include_router(history.router)
+app.include_router(status.router)
 
 app.mount("/audio", StaticFiles(directory=str(storage.OUTPUT_DIR)), name="audio")
 

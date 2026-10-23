@@ -272,6 +272,42 @@ body::before {
   text-transform: uppercase;
 }
 
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  box-shadow: 0 0 0 0 transparent;
+  transition: background 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.status-badge.is-ready .status-dot {
+  background: var(--ok);
+  box-shadow: 0 0 7px -1px var(--ok);
+}
+.status-badge.is-loading .status-dot {
+  background: var(--accent);
+  animation: status-pulse 1.2s ease-in-out infinite;
+}
+.status-badge.is-error .status-dot {
+  background: var(--danger);
+}
+.status-badge.is-error .status-text { color: var(--danger); }
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
 /* ---------- Tactile segmented tabs ---------- */
 
 .tabs {
@@ -1002,6 +1038,16 @@ audio {
   color-scheme: dark;
   filter: sepia(0.2) saturate(0.85) hue-rotate(-6deg);
   border-radius: 999px;
+}
+
+.result-waveform {
+  display: block;
+  width: 100%;
+  height: 56px;
+  margin-bottom: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--well);
+  border: 1px solid var(--line);
 }
 
 .result-audio { margin-bottom: 12px; }

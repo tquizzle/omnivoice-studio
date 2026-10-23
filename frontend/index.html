@@ -28,6 +28,10 @@
         <div>
           <h1 class="brand-title">OmniVoice <em>Studio</em></h1>
           <p class="brand-sub">voice cloning · voice design · auto voice</p>
+          <p id="status-badge" class="status-badge" role="status" aria-live="polite">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="status-text">Checking…</span>
+          </p>
         </div>
       </div>
 
@@ -128,6 +132,7 @@
             <span class="badge">clone</span>
             <span class="result-title">Rendered take</span>
           </div>
+          <canvas class="result-waveform" aria-hidden="true"></canvas>
           <audio class="result-audio" controls></audio>
           <a class="result-download" download>Download</a>
         </section>
@@ -239,6 +244,7 @@
             <span class="badge">design</span>
             <span class="result-title">Rendered take</span>
           </div>
+          <canvas class="result-waveform" aria-hidden="true"></canvas>
           <audio class="result-audio" controls></audio>
           <a class="result-download" download>Download</a>
         </section>
@@ -287,6 +293,7 @@
             <span class="badge">auto</span>
             <span class="result-title">Rendered take</span>
           </div>
+          <canvas class="result-waveform" aria-hidden="true"></canvas>
           <audio class="result-audio" controls></audio>
           <a class="result-download" download>Download</a>
         </section>
