@@ -35,6 +35,8 @@
     "library-voices", "library-history",
 
     "tab-clone", "tab-design", "tab-auto", "tab-library",
+
+    "theme-select",
   ];
 
   const $ = (id) => document.getElementById(id);
@@ -149,6 +151,50 @@
   tabButtons.forEach((btn) => {
     btn.addEventListener("click", () => showTab(btn.dataset.tab));
   });
+
+  /* ---------- theme switcher ---------- */
+
+  const THEME_KEY = "omnivoice-theme";
+  const THEME_COLOR_SCHEME = {
+    dark: "dark",
+    light: "light",
+    nord: "dark",
+    catppuccin: "dark",
+  };
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+    if (colorSchemeMeta) {
+      const scheme = THEME_COLOR_SCHEME[theme] || "dark";
+      colorSchemeMeta.setAttribute("content", `${scheme} light`);
+    }
+  }
+
+  function initTheme() {
+    let saved = "dark";
+    try {
+      saved = localStorage.getItem(THEME_KEY) || document.documentElement.getAttribute("data-theme") || "dark";
+    } catch (_) {
+      saved = document.documentElement.getAttribute("data-theme") || "dark";
+    }
+    applyTheme(saved);
+    if (els["theme-select"]) els["theme-select"].value = saved;
+  }
+
+  if (els["theme-select"]) {
+    els["theme-select"].addEventListener("change", (e) => {
+      const theme = e.target.value;
+      applyTheme(theme);
+      try {
+        localStorage.setItem(THEME_KEY, theme);
+      } catch (_) {
+        /* private mode / blocked storage — theme still applies for this session */
+      }
+    });
+  }
+
+  initTheme();
 
   /* ---------- clone: dropzone + reference audio ---------- */
 

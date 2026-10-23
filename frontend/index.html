@@ -3,7 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="dark light">
+  <script>
+    // Applied synchronously, before CSS paints, so a stored theme choice never flashes
+    // as the default dark theme first. Any failure (private mode, blocked storage)
+    // just leaves the default dark theme in place.
+    try {
+      var savedTheme = localStorage.getItem("omnivoice-theme");
+      if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+    } catch (_) {}
+  </script>
   <title>🎙️ OmniVoice Studio</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%99%EF%B8%8F%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
@@ -35,6 +44,16 @@
           <span class="tab-index">04</span>Library
         </button>
       </nav>
+
+      <div class="theme-picker">
+        <label class="label" for="theme-select">Theme</label>
+        <select id="theme-select" class="control theme-control">
+          <option value="dark">Dark Studio</option>
+          <option value="light">Light</option>
+          <option value="nord">Nord</option>
+          <option value="catppuccin">Catppuccin</option>
+        </select>
+      </div>
     </header>
 
     <main class="panels">
