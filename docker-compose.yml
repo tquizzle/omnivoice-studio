@@ -1,0 +1,36 @@
+# OmniVoice Studio - Docker Compose (CPU, portable mode)
+#
+# Apple Silicon note: MPS (Metal) acceleration is NOT available inside Linux
+# containers. This compose file always runs the model on CPU. For GPU-class
+# speed on a Mac, run the app natively instead (see README.md, "Run mode 1").
+#
+# Usage:
+#   cp .env.example .env
+#   docker compose up -d
+#   open http://localhost:8000
+
+services:
+  omnivoice-webui:
+    build:
+      context: .                      # repo root, so the image can see frontend/
+      dockerfile: backend/Dockerfile
+
+    # Settings (OMNIVOICE_MODEL, OMNIVOICE_DEVICE, OMNIVOICE_DTYPE, ...) come from .env
+    env_file:
+      - .env
+
+    environment:
+      # Force the container data path, regardless of what .env says.
+      # A native-mode DATA_DIR (e.g. ./data) would be meaningless inside the container.
+      DATA_DIR: /data
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      # Persistent storage: voices (.pt), generated audio (.wav), voices.json, history.json
+      - ./data:/data
+      # Live-edit the frontend without rebuilding the image (read-only inside the container)
+      - ./frontend:/app/frontend:ro
+
+    restart: unless-stopped

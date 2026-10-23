@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>🎙️ OmniVoice Studio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%99%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="rack">
+    <header class="masthead">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i>
+        </span>
+        <div>
+          <h1 class="brand-title">OmniVoice <em>Studio</em></h1>
+          <p class="brand-sub">voice cloning · voice design · auto voice</p>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Generation modes">
+        <button type="button" class="tab active" data-tab="clone" role="tab" aria-selected="true" aria-controls="tab-clone">
+          <span class="tab-index">01</span>Clone
+        </button>
+        <button type="button" class="tab" data-tab="design" role="tab" aria-selected="false" aria-controls="tab-design">
+          <span class="tab-index">02</span>Design
+        </button>
+        <button type="button" class="tab" data-tab="auto" role="tab" aria-selected="false" aria-controls="tab-auto">
+          <span class="tab-index">03</span>Auto
+        </button>
+        <button type="button" class="tab" data-tab="library" role="tab" aria-selected="false" aria-controls="tab-library">
+          <span class="tab-index">04</span>Library
+        </button>
+      </nav>
+    </header>
+
+    <main class="panels">
+
+      <!-- ============ CLONE ============ -->
+      <section class="panel card" id="tab-clone" role="tabpanel" aria-label="Clone a voice">
+        <div class="card-head">
+          <h2>Clone a voice</h2>
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </div>
+
+        <div class="field">
+          <span class="label">Reference audio</span>
+          <div id="clone-dropzone" class="dropzone" tabindex="0" role="button" aria-label="Choose or drop a reference audio file">
+            <div class="dropzone-inner">
+              <span class="dropzone-icon" aria-hidden="true">⤓</span>
+              <p class="dropzone-title">Drop a voice sample here</p>
+              <p class="dropzone-hint">or click to browse · any audio file</p>
+            </div>
+          </div>
+          <input id="clone-ref-audio" type="file" accept="audio/*" hidden>
+          <audio id="clone-ref-preview" class="preview" controls hidden></audio>
+        </div>
+
+        <div class="field">
+          <label class="label" for="clone-voice-select">Or use a saved voice</label>
+          <select id="clone-voice-select" class="control">
+            <option value="">— new reference audio —</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="label" for="clone-ref-text">Reference transcript</label>
+          <input id="clone-ref-text" class="control" type="text" placeholder="Reference transcript (optional — auto-transcribed if left blank)">
+        </div>
+
+        <div class="field">
+          <label class="label" for="clone-text">Script</label>
+          <textarea id="clone-text" class="control" rows="4" placeholder="Text to speak in this voice"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="label" for="clone-save-voice-name">Save voice</label>
+          <input id="clone-save-voice-name" class="control" type="text" placeholder="Save this voice as… (optional)">
+        </div>
+
+        <details class="advanced">
+          <summary>Advanced</summary>
+          <div class="advanced-grid">
+            <label class="mini">
+              <span>Steps</span>
+              <input id="clone-num-step" class="control" type="number" min="1" max="128" step="1" value="32">
+            </label>
+            <label class="mini">
+              <span>Speed</span>
+              <input id="clone-speed" class="control" type="number" min="0.1" max="3" step="0.05" value="1.0">
+            </label>
+            <label class="mini">
+              <span>Duration (s)</span>
+              <input id="clone-duration" class="control" type="number" min="0.5" max="600" step="0.5" placeholder="auto">
+            </label>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button id="clone-generate-btn" class="btn-primary" type="button">
+            <span class="btn-label">Generate</span>
+          </button>
+          <p id="clone-status" class="status" role="status" aria-live="polite"></p>
+        </div>
+
+        <section id="clone-result" class="result" hidden>
+          <div class="result-meta">
+            <span class="badge">clone</span>
+            <span class="result-title">Rendered take</span>
+          </div>
+          <audio class="result-audio" controls></audio>
+          <a class="result-download" download>Download</a>
+        </section>
+      </section>
+
+      <!-- ============ DESIGN ============ -->
+      <section class="panel card" id="tab-design" role="tabpanel" aria-label="Design a voice" hidden>
+        <div class="card-head">
+          <h2>Design a voice</h2>
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </div>
+
+        <div class="field">
+          <span class="label">Instruct language</span>
+          <div id="design-lang" class="segmented segmented-2" role="radiogroup" aria-label="Instruct language">
+            <button type="button" class="seg active" data-value="en" role="radio" aria-checked="true">English</button>
+            <button type="button" class="seg" data-value="zh" role="radio" aria-checked="false">Chinese</button>
+          </div>
+          <p class="hint">The model only accepts attributes in one language at a time — every field below switches together. Match it to the language of your script.</p>
+        </div>
+
+        <div class="field">
+          <span class="label">Gender</span>
+          <div id="design-gender" class="segmented" role="radiogroup" aria-label="Gender">
+            <button type="button" class="seg active" data-value="" role="radio" aria-checked="true">Unset</button>
+            <button type="button" class="seg" data-value="male" role="radio" aria-checked="false">Male</button>
+            <button type="button" class="seg" data-value="female" role="radio" aria-checked="false">Female</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label class="label" for="design-age">Age</label>
+            <span class="readout" id="design-age-readout">adult</span>
+          </div>
+          <div class="fader-wrap">
+            <span class="fader-end">child</span>
+            <input id="design-age" class="fader" type="range" min="0" max="100" step="1" value="50" aria-label="Age, child to elderly">
+            <span class="fader-end">elderly</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label class="label" for="design-pitch">Pitch</label>
+            <span class="readout" id="design-pitch-readout">medium</span>
+          </div>
+          <div class="fader-wrap">
+            <span class="fader-end">very low</span>
+            <input id="design-pitch" class="fader" type="range" min="0" max="100" step="1" value="50" aria-label="Pitch, very low to very high">
+            <span class="fader-end">very high</span>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="toggle">
+            <input id="design-whisper" type="checkbox">
+            <span class="toggle-ui" aria-hidden="true"></span>
+            <span>Whisper</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <label class="label" id="design-accent-dialect-label" for="design-accent-dialect">Accent</label>
+          <select id="design-accent-dialect" class="control">
+            <option value="">— none —</option>
+          </select>
+          <p id="design-accent-dialect-hint" class="hint">Options match the instruct language selected above.</p>
+        </div>
+
+        <div class="field">
+          <span class="label">Instruct string</span>
+          <div id="design-instruct-preview" class="instruct-preview" aria-live="polite">auto</div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="design-text">Script</label>
+          <textarea id="design-text" class="control" rows="4" placeholder="Text to speak in this voice"></textarea>
+          <p id="design-script-hint" class="hint">Write this in English to match the attributes above.</p>
+        </div>
+
+        <details class="advanced">
+          <summary>Advanced</summary>
+          <div class="advanced-grid">
+            <label class="mini">
+              <span>Steps</span>
+              <input id="design-num-step" class="control" type="number" min="1" max="128" step="1" value="32">
+            </label>
+            <label class="mini">
+              <span>Speed</span>
+              <input id="design-speed" class="control" type="number" min="0.1" max="3" step="0.05" value="1.0">
+            </label>
+            <label class="mini">
+              <span>Duration (s)</span>
+              <input id="design-duration" class="control" type="number" min="0.5" max="600" step="0.5" placeholder="auto">
+            </label>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button id="design-generate-btn" class="btn-primary" type="button">
+            <span class="btn-label">Generate</span>
+          </button>
+          <p id="design-status" class="status" role="status" aria-live="polite"></p>
+        </div>
+
+        <section id="design-result" class="result" hidden>
+          <div class="result-meta">
+            <span class="badge">design</span>
+            <span class="result-title">Rendered take</span>
+          </div>
+          <audio class="result-audio" controls></audio>
+          <a class="result-download" download>Download</a>
+        </section>
+      </section>
+
+      <!-- ============ AUTO ============ -->
+      <section class="panel card" id="tab-auto" role="tabpanel" aria-label="Auto voice" hidden>
+        <div class="card-head">
+          <h2>Auto voice</h2>
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </div>
+        <p class="lede">No reference, no instruction. The model picks a voice for you.</p>
+
+        <div class="field">
+          <label class="label" for="auto-text">Script</label>
+          <textarea id="auto-text" class="control" rows="6" placeholder="Text to speak"></textarea>
+        </div>
+
+        <details class="advanced">
+          <summary>Advanced</summary>
+          <div class="advanced-grid">
+            <label class="mini">
+              <span>Steps</span>
+              <input id="auto-num-step" class="control" type="number" min="1" max="128" step="1" value="32">
+            </label>
+            <label class="mini">
+              <span>Speed</span>
+              <input id="auto-speed" class="control" type="number" min="0.1" max="3" step="0.05" value="1.0">
+            </label>
+            <label class="mini">
+              <span>Duration (s)</span>
+              <input id="auto-duration" class="control" type="number" min="0.5" max="600" step="0.5" placeholder="auto">
+            </label>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button id="auto-generate-btn" class="btn-primary" type="button">
+            <span class="btn-label">Generate</span>
+          </button>
+          <p id="auto-status" class="status" role="status" aria-live="polite"></p>
+        </div>
+
+        <section id="auto-result" class="result" hidden>
+          <div class="result-meta">
+            <span class="badge">auto</span>
+            <span class="result-title">Rendered take</span>
+          </div>
+          <audio class="result-audio" controls></audio>
+          <a class="result-download" download>Download</a>
+        </section>
+      </section>
+
+      <!-- ============ LIBRARY ============ -->
+      <section class="panel" id="tab-library" role="tabpanel" aria-label="Library" hidden>
+        <div class="library-block">
+          <div class="card-head">
+            <h2>Saved voices</h2>
+            <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div id="library-voices" class="grid"></div>
+        </div>
+
+        <div class="library-block">
+          <div class="card-head">
+            <h2>History</h2>
+            <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div id="library-history" class="list"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="colophon">
+      <span>OmniVoice Studio</span>
+      <span class="dot" aria-hidden="true">•</span>
+      <span>self-hosted · no auth · LAN use</span>
+    </footer>
+  </div>
+</body>
+</html>

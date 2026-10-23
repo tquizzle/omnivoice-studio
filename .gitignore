@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Runtime data (voices, generated audio, history/metadata) — never commit user content
+data/
+.env
+
+# OS cruft
+.DS_Store
+
+# Docker
+docker-compose.override.yml
