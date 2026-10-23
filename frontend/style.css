@@ -276,7 +276,7 @@ body::before {
 
 .tabs {
   display: flex;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   gap: 2px;
   padding: 4px;
