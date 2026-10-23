@@ -197,6 +197,11 @@ body::before {
 /* ---------- Masthead ---------- */
 
 .masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 20px;
   padding-bottom: 22px;
   margin-bottom: 26px;
   border-bottom: 1px solid var(--line);
@@ -210,15 +215,6 @@ body::before {
   width: 120px;
   height: 1px;
   background: linear-gradient(90deg, var(--accent), transparent);
-}
-
-.masthead-top {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px 20px;
-  margin-bottom: 18px;
 }
 
 .brand {
@@ -297,6 +293,7 @@ body::before {
 .theme-switch {
   display: flex;
   flex: none;
+  flex-direction: column;
   align-items: center;
   gap: 6px;
   padding: 5px;
@@ -308,8 +305,8 @@ body::before {
 
 .theme-swatch {
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   padding: 0;
   margin: 0;
   border-radius: 50%;
@@ -331,7 +328,7 @@ body::before {
 .theme-swatch[data-value="catppuccin"] {
   background: conic-gradient(from -45deg, #cba6f7 0deg 90deg, #cdd6f4 90deg 180deg, #1e1e2e 180deg 360deg);
 }
-.theme-swatch:hover { transform: translateY(-1px); }
+.theme-swatch:hover { transform: translateX(1px); }
 .theme-swatch:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 2px; }
 .theme-swatch.active {
   border-color: var(--accent);
