@@ -36,7 +36,7 @@
 
     "tab-clone", "tab-design", "tab-auto", "tab-library",
 
-    "theme-select",
+    "theme-switch",
   ];
 
   const $ = (id) => document.getElementById(id);
@@ -171,6 +171,16 @@
     }
   }
 
+  const themeSwatches = els["theme-switch"] ? [...els["theme-switch"].querySelectorAll(".theme-swatch")] : [];
+
+  function setActiveSwatch(theme) {
+    themeSwatches.forEach((btn) => {
+      const active = btn.dataset.value === theme;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-checked", String(active));
+    });
+  }
+
   function initTheme() {
     let saved = "dark";
     try {
@@ -179,20 +189,21 @@
       saved = document.documentElement.getAttribute("data-theme") || "dark";
     }
     applyTheme(saved);
-    if (els["theme-select"]) els["theme-select"].value = saved;
+    setActiveSwatch(saved);
   }
 
-  if (els["theme-select"]) {
-    els["theme-select"].addEventListener("change", (e) => {
-      const theme = e.target.value;
+  themeSwatches.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const theme = btn.dataset.value;
       applyTheme(theme);
+      setActiveSwatch(theme);
       try {
         localStorage.setItem(THEME_KEY, theme);
       } catch (_) {
         /* private mode / blocked storage — theme still applies for this session */
       }
     });
-  }
+  });
 
   initTheme();
 

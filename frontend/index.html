@@ -45,14 +45,11 @@
         </button>
       </nav>
 
-      <div class="theme-picker">
-        <label class="label" for="theme-select">Theme</label>
-        <select id="theme-select" class="control theme-control">
-          <option value="dark">Dark Studio</option>
-          <option value="light">Light</option>
-          <option value="nord">Nord</option>
-          <option value="catppuccin">Catppuccin</option>
-        </select>
+      <div id="theme-switch" class="theme-switch" role="radiogroup" aria-label="Theme">
+        <button type="button" class="theme-swatch active" data-value="dark" role="radio" aria-checked="true" aria-label="Dark Studio theme" title="Dark Studio"></button>
+        <button type="button" class="theme-swatch" data-value="light" role="radio" aria-checked="false" aria-label="Light theme" title="Light"></button>
+        <button type="button" class="theme-swatch" data-value="nord" role="radio" aria-checked="false" aria-label="Nord theme" title="Nord"></button>
+        <button type="button" class="theme-swatch" data-value="catppuccin" role="radio" aria-checked="false" aria-label="Catppuccin theme" title="Catppuccin"></button>
       </div>
     </header>
 
