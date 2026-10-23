@@ -6,7 +6,9 @@ frontend, no build step, no framework.
 
 > Unofficial, community-built. Not affiliated with or endorsed by the OmniVoice team.
 
-![screenshot placeholder](docs/screenshot.png)
+| Clone | Design | Auto |
+|---|---|---|
+| ![Clone a voice](docs/screenshot-clone.png) | ![Design a voice](docs/screenshot-design.png) | ![Auto voice](docs/screenshot-auto.png) |
 
 ## Features
 
