@@ -3,7 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="dark light">
+  <script>
+    // Applied synchronously, before CSS paints, so a stored theme choice never flashes
+    // as the default dark theme first. Any failure (private mode, blocked storage)
+    // just leaves the default dark theme in place.
+    try {
+      var savedTheme = localStorage.getItem("omnivoice-theme");
+      if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+    } catch (_) {}
+  </script>
   <title>🎙️ OmniVoice Studio</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%99%EF%B8%8F%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
@@ -21,6 +30,7 @@
           <p class="brand-sub">voice cloning · voice design · auto voice</p>
         </div>
       </div>
+
       <nav class="tabs" role="tablist" aria-label="Generation modes">
         <button type="button" class="tab active" data-tab="clone" role="tab" aria-selected="true" aria-controls="tab-clone">
           <span class="tab-index">01</span>Clone
@@ -35,6 +45,13 @@
           <span class="tab-index">04</span>Library
         </button>
       </nav>
+
+      <div id="theme-switch" class="theme-switch" role="radiogroup" aria-label="Theme">
+        <button type="button" class="theme-swatch active" data-value="dark" role="radio" aria-checked="true" aria-label="Dark Studio theme" title="Dark Studio"></button>
+        <button type="button" class="theme-swatch" data-value="light" role="radio" aria-checked="false" aria-label="Light theme" title="Light"></button>
+        <button type="button" class="theme-swatch" data-value="nord" role="radio" aria-checked="false" aria-label="Nord theme" title="Nord"></button>
+        <button type="button" class="theme-swatch" data-value="catppuccin" role="radio" aria-checked="false" aria-label="Catppuccin theme" title="Catppuccin"></button>
+      </div>
     </header>
 
     <main class="panels">
