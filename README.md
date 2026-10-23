@@ -1,8 +1,8 @@
 # 🎙️ OmniVoice Studio
 
 A self-hosted web UI for [k2-fsa/OmniVoice](https://github.com/k2-fsa/OmniVoice) — voice cloning,
-voice design, and auto voice, in a dark studio-style interface. FastAPI backend, plain-JS
-frontend, no build step, no framework.
+voice design, and auto voice, in a studio-style interface with four selectable themes.
+FastAPI backend, plain-JS frontend, no build step, no framework.
 
 > Unofficial, community-built. Not affiliated with or endorsed by the OmniVoice team.
 
@@ -25,6 +25,19 @@ frontend, no build step, no framework.
 - **No build step** — the frontend is plain HTML/CSS/ES6, no npm install, no bundler.
 - Runs natively on **Apple Silicon (MPS)** for full acceleration, or in **Docker** (CPU) for
   portability.
+
+## Themes
+
+Dark Studio, Light, Nord, and Catppuccin (Mocha) — switch from the swatch stack in the header.
+Your choice is remembered on this device.
+
+| Dark Studio | Light |
+|---|---|
+| ![Dark Studio theme](docs/theme-dark.png) | ![Light theme](docs/theme-light.png) |
+
+| Nord | Catppuccin |
+|---|---|
+| ![Nord theme](docs/theme-nord.png) | ![Catppuccin theme](docs/theme-catppuccin.png) |
 
 ## Quickstart
 
