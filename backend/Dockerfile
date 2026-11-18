@@ -10,7 +10,7 @@
 # portability and CPU fallback, or for Linux hosts with NVIDIA GPUs (use a CUDA
 # base image and set OMNIVOICE_DEVICE=cuda:0 for that).
 
-FROM python:3.12-slim
+FROM python:3.15-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
